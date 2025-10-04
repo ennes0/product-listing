@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+// API Base URL - automatically detects environment
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://product-listing-api-ekqi.onrender.com/api'
+  : 'http://localhost:8000/api';
 
 class ApiService {
   async getProducts(params = {}) {

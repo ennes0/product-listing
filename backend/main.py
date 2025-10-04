@@ -17,6 +17,7 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "https://product-listing-frontend.onrender.com",  # Render frontend URL
     "https://product-listing-frontend-*.onrender.com",  # Render preview deployments
+    "https://product-listing-api-ekqi.onrender.com",  # Current backend URL
 ]
 
 # In production, allow all origins for now (can be restricted later)

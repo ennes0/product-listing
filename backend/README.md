@@ -28,12 +28,19 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 python main.py
 ```
 
-The API will be available at `http://localhost:8000`
+The API will be available at:
+- **Development**: `http://localhost:8000`
+- **Production**: `https://product-listing-api-ekqi.onrender.com`
 
 ## API Documentation
 
+### Development:
 - Interactive API docs: `http://localhost:8000/docs`
 - ReDoc documentation: `http://localhost:8000/redoc`
+
+### Production:
+- Interactive API docs: `https://product-listing-api-ekqi.onrender.com/docs`
+- ReDoc documentation: `https://product-listing-api-ekqi.onrender.com/redoc`
 
 ## API Endpoints
 
