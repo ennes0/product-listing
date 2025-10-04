@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import ProductCard from './ProductCard';
 import ProductFilter from './ProductFilter';
 import './ProductList.css';
@@ -53,7 +53,7 @@ const ProductList = ({ products, filters, openFilter, onFiltersChange, onFilterT
     }
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     if (!isDragging) return;
     e.preventDefault();
     
@@ -74,7 +74,7 @@ const ProductList = ({ products, filters, openFilter, onFiltersChange, onFilterT
       const maxScroll = scrollWidth - clientWidth;
       scrollRef.current.scrollLeft = percentage * maxScroll;
     }
-  };
+  }, [isDragging]);
 
   useEffect(() => {
     const scrollElement = scrollRef.current;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './ProductFilter.css';
 
 const ProductFilter = ({ onFiltersChange, filters = {}, filterType = "price", title = "Filter", isOpen = false, onToggle }) => {
@@ -51,30 +51,7 @@ const ProductFilter = ({ onFiltersChange, filters = {}, filterType = "price", ti
     onFiltersChange(cleanFilters);
   };
 
-  const handleRangeChange = (field, value) => {
-    const newFilters = { ...localFilters };
-    
-    if (field === 'priceRange') {
-      newFilters.priceRange = value;
-      newFilters.minPrice = value[0] === 0 ? '' : value[0];
-      newFilters.maxPrice = value[1] === 1000 ? '' : value[1];
-    } else if (field === 'popularityRange') {
-      newFilters.popularityRange = value;
-      newFilters.minPopularity = value[0] === 0 ? '' : value[0];
-      newFilters.maxPopularity = value[1] === 100 ? '' : value[1];
-    }
-    
-    setLocalFilters(newFilters);
-    
-   
-    const cleanFilters = {};
-    if (newFilters.minPrice && newFilters.minPrice !== '') cleanFilters.minPrice = parseFloat(newFilters.minPrice);
-    if (newFilters.maxPrice && newFilters.maxPrice !== '') cleanFilters.maxPrice = parseFloat(newFilters.maxPrice);
-    if (newFilters.minPopularity && newFilters.minPopularity !== '') cleanFilters.minPopularity = parseFloat(newFilters.minPopularity);
-    if (newFilters.maxPopularity && newFilters.maxPopularity !== '') cleanFilters.maxPopularity = parseFloat(newFilters.maxPopularity);
-    
-    onFiltersChange(cleanFilters);
-  };
+
 
   const applyQuickFilter = (quickFilter) => {
     const newFilters = { ...localFilters, ...quickFilter.filter };

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './fonts.css';
 import './App.css';
 import './styles/themes.css';
 import ProductList from './components/ProductList';
-import ProductFilter from './components/ProductFilter';
 import ThemeToggle from './components/ThemeToggle';
 import apiService from './services/apiService';
 
@@ -13,23 +12,10 @@ function App() {
   const [error, setError] = useState(null);
   const [goldPrice, setGoldPrice] = useState(null);
   const [goldPriceInfo, setGoldPriceInfo] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
   const [filters, setFilters] = useState({});
   const [openFilter, setOpenFilter] = useState(null);
 
-  useEffect(() => {
-    loadAllData();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [filters]);
-
-  const loadAllData = async () => {
-    await Promise.all([fetchProducts(), fetchGoldPrice()]);
-  };
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const params = { 
@@ -47,7 +33,30 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  const fetchGoldPrice = useCallback(async () => {
+    try {
+      const response = await apiService.getGoldPrice();
+      setGoldPrice(response.price);
+      setGoldPriceInfo(response);
+      console.log('✅ Gold price loaded:', response);
+    } catch (error) {
+      console.error('Error fetching gold price:', error);
+    }
+  }, []);
+
+  const loadAllData = useCallback(async () => {
+    await Promise.all([fetchProducts(), fetchGoldPrice()]);
+  }, [fetchProducts, fetchGoldPrice]);
+
+  useEffect(() => {
+    loadAllData();
+  }, [loadAllData]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
@@ -70,20 +79,10 @@ function App() {
     };
   }, [openFilter]);
 
-  const fetchGoldPrice = async () => {
-    try {
-      const response = await apiService.getGoldPrice();
-      setGoldPrice(response.price);
-      setGoldPriceInfo(response);
-      console.log('✅ Gold price loaded:', response);
-    } catch (error) {
-      console.error('Error fetching gold price:', error);
-    }
-  };
+
 
   const refreshPrices = async () => {
     try {
-      setRefreshing(true);
       console.log('🔄 Refreshing all prices...');
       
       const goldResponse = await apiService.refreshGoldPrice();
@@ -101,8 +100,6 @@ function App() {
     } catch (error) {
       console.error('Error refreshing prices:', error);
       setError('Failed to refresh prices. Please check your connection.');
-    } finally {
-      setRefreshing(false);
     }
   };
 
