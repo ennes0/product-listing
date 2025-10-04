@@ -18,6 +18,8 @@ allowed_origins = [
     "https://product-listing-frontend.onrender.com",  # Render frontend URL
     "https://product-listing-frontend-*.onrender.com",  # Render preview deployments
     "https://product-listing-api-ekqi.onrender.com",  # Current backend URL
+    "https://timely-paprenjak-f002ed.netlify.app",  # Netlify deployment URL
+    "https://*.netlify.app",  # All Netlify deployments
 ]
 
 # In production, allow all origins for now (can be restricted later)
