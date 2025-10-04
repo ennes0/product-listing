@@ -11,9 +11,21 @@ from datetime import datetime
 app = FastAPI(title="Product Listing API", version="1.0.0")
 
 
+# CORS configuration for development and production
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://product-listing-frontend.onrender.com",  # Render frontend URL
+    "https://product-listing-frontend-*.onrender.com",  # Render preview deployments
+]
+
+# In production, allow all origins for now (can be restricted later)
+if os.environ.get("RENDER"):
+    allowed_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Heroku için tüm originlere izin ver
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -163,7 +175,11 @@ def load_products():
 
 @app.get("/")
 async def root():
-    return {"message": "Product Listing API", "version": "1.0.0"}
+    return {"message": "Product Listing API", "version": "1.0.0", "status": "healthy"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 @app.get("/api/products", response_model=ProductResponse)
 async def get_products(
@@ -255,5 +271,5 @@ async def refresh_gold_price():
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # Heroku PORT environment variable
+    port = int(os.environ.get("PORT", 8000))  # Render PORT environment variable
     uvicorn.run(app, host="0.0.0.0", port=port)
