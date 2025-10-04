@@ -1,4 +1,18 @@
-# Getting Started with Create React App
+# Product Listing Frontend
+
+A React-based frontend for the product listing application with real-time gold price integration.
+
+## 🚀 Live Demo
+- **Production**: [To be deployed on Netlify]
+- **Backend API**: https://product-listing-api-ekqi.onrender.com
+
+## ✨ Features
+- 📱 **Responsive Design**: Mobile-first approach
+- 🌓 **Theme Toggle**: Light/Dark mode
+- 💰 **Real-time Gold Pricing**: Live price updates
+- 🔍 **Advanced Filtering**: Price and popularity filters
+- 📊 **Interactive UI**: Smooth animations and transitions
+- 📱 **Touch Navigation**: Swipe support for mobile
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
