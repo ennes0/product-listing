@@ -146,6 +146,23 @@ body {
   }
 }
 
+@keyframes refreshSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.minimal-gold-price.refreshing {
+  background: rgba(26, 26, 26, 0.98);
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.minimal-refresh-spinner {
+  display: inline-block;
+  animation: refreshSpin 1s linear infinite;
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
 
 @media (max-width: 1200px) {
   .App {
@@ -203,15 +220,16 @@ body {
 
 @media (max-width: 480px) {
   .App {
-    padding: 0.5rem 0.25rem;
+    padding: 0.8rem 0.4rem;
   }
   
   .minimal-gold-price {
-    bottom: 15px;
-    right: 15px;
-    padding: 6px 10px;
-    font-size: 0.7rem;
-    gap: 4px;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    gap: 6px;
+    border-radius: 25px;
   }
   
   .minimal-gold-icon {
@@ -264,7 +282,7 @@ body {
 
 @media (max-width: 480px) {
   .products-section {
-    margin: 0.2rem auto 0;
-    padding: 0 0.2rem;
+    margin: 0.5rem auto 0;
+    padding: 0 0.4rem;
   }
 }

@@ -14,6 +14,7 @@ function App() {
   const [goldPriceInfo, setGoldPriceInfo] = useState(null);
   const [filters, setFilters] = useState({});
   const [openFilter, setOpenFilter] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchProducts = useCallback(async (forceRefresh = false) => {
     try {
@@ -61,24 +62,23 @@ function App() {
     loadAllData();
   }, [loadAllData]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  // Auto-refresh prices every 2 minutes
+  // Auto-refresh prices every 3 minutes
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
         console.log('🔄 Auto-refreshing prices (periodic)...');
-        await fetchProducts(true); // Force refresh gold price and reload products
-        await fetchGoldPrice(); // Update gold price display
+        // Only refresh if user is not actively filtering
+        if (!openFilter) {
+          await fetchProducts(true); // Force refresh gold price and reload products
+          await fetchGoldPrice(); // Update gold price display
+        }
       } catch (error) {
         console.log('⚠️ Periodic refresh failed:', error);
       }
-    }, 120000); // 2 minutes
+    }, 180000); // 3 minutes instead of 2
 
     return () => clearInterval(interval);
-  }, [fetchProducts, fetchGoldPrice]);
+  }, [fetchProducts, fetchGoldPrice, openFilter]);
 
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
@@ -105,6 +105,7 @@ function App() {
 
   const refreshPrices = async () => {
     try {
+      setIsRefreshing(true);
       console.log('🔄 Refreshing all prices...');
       
       // Force refresh products with new gold price
@@ -119,6 +120,8 @@ function App() {
     } catch (error) {
       console.error('Error refreshing prices:', error);
       setError('Failed to refresh prices. Please check your connection.');
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -138,13 +141,16 @@ function App() {
       <ThemeToggle />
 
       {goldPrice && (
-        <div className="minimal-gold-price">
+        <div className={`minimal-gold-price ${isRefreshing ? 'refreshing' : ''}`}>
           <span className="minimal-gold-icon">💰</span>
           <span className="minimal-gold-text">
             ${goldPrice.toFixed(2)}/g
           </span>
-          {goldPriceInfo?.is_live && (
+          {goldPriceInfo?.is_live && !isRefreshing && (
             <span className="minimal-live-dot"></span>
+          )}
+          {isRefreshing && (
+            <span className="minimal-refresh-spinner">⟳</span>
           )}
         </div>
       )}

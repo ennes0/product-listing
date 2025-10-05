@@ -173,9 +173,10 @@
 
 @media (max-width: 480px) {
   .product-card {
-    min-width: 170px;
-    padding: 0.8rem;
-    border-radius: 8px;
+    min-width: 180px;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   .product-card:hover {
@@ -183,9 +184,15 @@
   }
   
   .product-image-container {
-    height: 170px;
-    border-radius: 5px;
-    margin-bottom: 0.6rem;
+    height: 180px;
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    background: #f8f8f8;
+  }
+  
+  .product-image {
+    border-radius: 8px;
+    transition: transform 0.2s ease;
   }
   
   .product-info {
@@ -226,12 +233,13 @@
 
 @media (max-width: 360px) {
   .product-card {
-    min-width: 150px;
-    padding: 0.7rem;
+    min-width: 160px;
+    padding: 0.9rem;
   }
   
   .product-image-container {
-    height: 150px;
+    height: 160px;
+    border-radius: 6px;
   }
   
   .product-title {
