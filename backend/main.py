@@ -126,6 +126,8 @@ def calculate_price(popularity_score: float, weight: float, gold_price: float) -
 
 def load_products(force_gold_refresh=False):
     """Load products from JSON file"""
+    global gold_price_cache
+    
     try:
         with open('products.json', 'r', encoding='utf-8') as file:
             raw_products = json.load(file)
@@ -140,7 +142,6 @@ def load_products(force_gold_refresh=False):
     if (force_gold_refresh or not gold_price_cache["last_updated"] or 
         (datetime.now() - gold_price_cache["last_updated"]).seconds > 120):
         print("🔄 Force refreshing gold price for product calculations...")
-        global gold_price_cache
         gold_price_cache["last_updated"] = None  # Clear cache to force refresh
     
     products_data = []
