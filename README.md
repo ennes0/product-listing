@@ -1,3 +1,5 @@
+Live site link ---> https://timely-paprenjak-f002ed.netlify.app/
+
 # Product Listing Application
 
 A full-stack web application for listing and filtering gold jewelry products with real-time pricing.
@@ -53,33 +55,3 @@ Frontend runs on: `http://localhost:3000`
 - `GET /api/gold-price` - Get current gold price
 - `POST /api/gold-price/refresh` - Refresh gold price
 
-## 🎨 Features
-
-- ✅ Responsive mobile-first design
-- ✅ Real-time gold price calculation
-- ✅ Product filtering by price and popularity
-- ✅ Light/Dark theme toggle
-- ✅ Smooth animations and transitions
-- ✅ Custom swipe navigation
-- ✅ Professional color schemes
-
-## 🚀 Deployment
-
-### Backend (Render.com)
-Deployed automatically from this repository at:
-`https://product-listing-api-ekqi.onrender.com`
-
-### Frontend
-Ready for deployment to Netlify, Vercel, or similar platforms.
-
-## 📱 Screenshots
-
-[Add screenshots here]
-
-## 🤝 Contributing
-
-1. Fork the project
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
