@@ -60,9 +60,9 @@ gold_price_cache = {"price": 65.0, "last_updated": None}
 def get_gold_price():
     """Get current gold price from gold.g.apised.com API with dynamic caching"""
     try:
-        
+        # Reduced cache time to 60 seconds for more dynamic updates
         if (gold_price_cache["last_updated"] and 
-            (datetime.now() - gold_price_cache["last_updated"]).seconds < 300):
+            (datetime.now() - gold_price_cache["last_updated"]).seconds < 60):
             return gold_price_cache["price"]
         
        
@@ -124,7 +124,7 @@ def calculate_price(popularity_score: float, weight: float, gold_price: float) -
    
     return (popularity_score + 1) * weight * gold_price
 
-def load_products():
+def load_products(force_gold_refresh=False):
     """Load products from JSON file"""
     try:
         with open('products.json', 'r', encoding='utf-8') as file:
@@ -136,7 +136,13 @@ def load_products():
         print("Error parsing products.json file!")
         return []
     
-  
+    # Force refresh gold price if requested or if cache is older than 2 minutes
+    if (force_gold_refresh or not gold_price_cache["last_updated"] or 
+        (datetime.now() - gold_price_cache["last_updated"]).seconds > 120):
+        print("🔄 Force refreshing gold price for product calculations...")
+        global gold_price_cache
+        gold_price_cache["last_updated"] = None  # Clear cache to force refresh
+    
     products_data = []
     gold_price = get_gold_price()
     
@@ -191,11 +197,12 @@ async def get_products(
     min_price: Optional[float] = Query(None, ge=0, description="Minimum price filter"),
     max_price: Optional[float] = Query(None, ge=0, description="Maximum price filter"),
     min_popularity: Optional[float] = Query(None, ge=0, le=100, description="Minimum popularity score"),
-    max_popularity: Optional[float] = Query(None, ge=0, le=100, description="Maximum popularity score")
+    max_popularity: Optional[float] = Query(None, ge=0, le=100, description="Maximum popularity score"),
+    refresh: Optional[bool] = Query(False, description="Force refresh gold price and recalculate prices")
 ):
     """Get products with optional filtering and pagination"""
     
-    products = load_products()
+    products = load_products(force_gold_refresh=refresh)
     
     
     filtered_products = products
@@ -226,9 +233,9 @@ async def get_products(
     )
 
 @app.get("/api/products/{product_id}", response_model=Product)
-async def get_product(product_id: int):
+async def get_product(product_id: int, refresh: Optional[bool] = Query(False, description="Force refresh gold price")):
     """Get a single product by ID"""
-    products = load_products()
+    products = load_products(force_gold_refresh=refresh)
     
     for product in products:
         if product.id == product_id:

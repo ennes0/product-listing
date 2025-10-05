@@ -15,13 +15,19 @@ function App() {
   const [filters, setFilters] = useState({});
   const [openFilter, setOpenFilter] = useState(null);
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async (forceRefresh = false) => {
     try {
       setLoading(true);
       const params = { 
         per_page: 20,
         ...filters
       };
+      
+      // Add refresh parameter if requested
+      if (forceRefresh) {
+        params.refresh = true;
+      }
+      
       const response = await apiService.getProducts(params);
       setProducts(response.products);
       setError(null);
@@ -47,7 +53,8 @@ function App() {
   }, []);
 
   const loadAllData = useCallback(async () => {
-    await Promise.all([fetchProducts(), fetchGoldPrice()]);
+    // Load data with forced gold price refresh
+    await Promise.all([fetchProducts(true), fetchGoldPrice()]);
   }, [fetchProducts, fetchGoldPrice]);
 
   useEffect(() => {
@@ -57,6 +64,21 @@ function App() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Auto-refresh prices every 2 minutes
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        console.log('🔄 Auto-refreshing prices (periodic)...');
+        await fetchProducts(true); // Force refresh gold price and reload products
+        await fetchGoldPrice(); // Update gold price display
+      } catch (error) {
+        console.log('⚠️ Periodic refresh failed:', error);
+      }
+    }, 120000); // 2 minutes
+
+    return () => clearInterval(interval);
+  }, [fetchProducts, fetchGoldPrice]);
 
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
@@ -85,16 +107,13 @@ function App() {
     try {
       console.log('🔄 Refreshing all prices...');
       
-      const goldResponse = await apiService.refreshGoldPrice();
-      setGoldPrice(goldResponse.new_price);
-      setGoldPriceInfo({
-        price: goldResponse.new_price,
-        last_updated: goldResponse.updated_at,
-        is_live: true,
-        source: goldResponse.source
-      });
+      // Force refresh products with new gold price
+      await fetchProducts(true);
       
-      await fetchProducts();
+      // Update gold price display
+      const goldResponse = await apiService.getGoldPrice();
+      setGoldPrice(goldResponse.price);
+      setGoldPriceInfo(goldResponse);
       
       console.log('✅ All prices refreshed successfully!');
     } catch (error) {
